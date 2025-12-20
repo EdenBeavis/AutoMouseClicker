@@ -29,46 +29,60 @@ namespace AutoMouseClicker
         /// </summary>
         private void InitializeComponent()
         {
-            radioButton1 = new RadioButton();
-            radioButton2 = new RadioButton();
+            randomDelayRadioButton = new RadioButton();
+            fixedDelayRadioButton = new RadioButton();
+            delayGroupBox = new GroupBox();
+            delayGroupBox.SuspendLayout();
             SuspendLayout();
             // 
-            // radioButton1
+            // randomDelayRadioButton
             // 
-            radioButton1.AutoSize = true;
-            radioButton1.Location = new Point(464, 103);
-            radioButton1.Name = "radioButton1";
-            radioButton1.Size = new Size(94, 19);
-            radioButton1.TabIndex = 0;
-            radioButton1.TabStop = true;
-            radioButton1.Text = "radioButton1";
-            radioButton1.UseVisualStyleBackColor = true;
+            randomDelayRadioButton.AutoSize = true;
+            randomDelayRadioButton.Location = new Point(28, 22);
+            randomDelayRadioButton.Name = "randomDelayRadioButton";
+            randomDelayRadioButton.Size = new Size(184, 19);
+            randomDelayRadioButton.TabIndex = 0;
+            randomDelayRadioButton.TabStop = true;
+            randomDelayRadioButton.Text = "Random Delay Between Clicks";
+            randomDelayRadioButton.UseVisualStyleBackColor = true;
             // 
-            // radioButton2
+            // fixedDelayRadioButton
             // 
-            radioButton2.AutoSize = true;
-            radioButton2.Location = new Point(464, 143);
-            radioButton2.Name = "radioButton2";
-            radioButton2.Size = new Size(94, 19);
-            radioButton2.TabIndex = 1;
-            radioButton2.TabStop = true;
-            radioButton2.Text = "radioButton2";
-            radioButton2.UseVisualStyleBackColor = true;
+            fixedDelayRadioButton.AutoSize = true;
+            fixedDelayRadioButton.Location = new Point(58, 66);
+            fixedDelayRadioButton.Name = "fixedDelayRadioButton";
+            fixedDelayRadioButton.Size = new Size(166, 19);
+            fixedDelayRadioButton.TabIndex = 1;
+            fixedDelayRadioButton.TabStop = true;
+            fixedDelayRadioButton.Text = "Fixed Delay Between Clicks";
+            fixedDelayRadioButton.UseVisualStyleBackColor = true;
+            // 
+            // delayGroupBox
+            // 
+            delayGroupBox.Controls.Add(fixedDelayRadioButton);
+            delayGroupBox.Controls.Add(randomDelayRadioButton);
+            delayGroupBox.Location = new Point(223, 181);
+            delayGroupBox.Name = "delayGroupBox";
+            delayGroupBox.Size = new Size(385, 197);
+            delayGroupBox.TabIndex = 3;
+            delayGroupBox.TabStop = false;
+            delayGroupBox.Text = "box";
             // 
             // AutoClickerForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
-            Controls.Add(radioButton2);
-            Controls.Add(radioButton1);
+            Controls.Add(delayGroupBox);
             Name = "AutoClickerForm";
             Text = "Auto Mouse Clicker";
             Load += AutoClickerForm_Load;
+            delayGroupBox.ResumeLayout(false);
+            delayGroupBox.PerformLayout();
             ResumeLayout(false);
-            PerformLayout();
         }
-        private RadioButton radioButton1;
-        private RadioButton radioButton2;
+        private RadioButton randomDelayRadioButton;
+        private RadioButton fixedDelayRadioButton;
+        private GroupBox delayGroupBox;
     }
 }

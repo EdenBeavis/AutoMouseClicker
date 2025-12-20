@@ -1,4 +1,5 @@
 using AutoMouseClicker.Infrastructure;
+using AutoMouseClicker.Infrastructure.Enums;
 using System.Timers;
 using Timer = System.Timers.Timer;
 
@@ -9,6 +10,7 @@ namespace AutoMouseClicker
         private readonly Timer _timer = new();
         private readonly Random _random = new();
         private bool _continueClickEvent = false;
+        private DelayType _delayType = DelayType.Random;
 
         public static void LeftMouseClick(int xPosition, int yPosition)
         {
@@ -30,6 +32,17 @@ namespace AutoMouseClicker
 
         private void AutoClickerForm_Load(object sender, EventArgs e)
         {
+            switch (_delayType)
+            {
+                case DelayType.Random:
+                    randomDelayRadioButton.Checked = true;
+                    break;
+
+                case DelayType.Fixed:
+                default:
+                    fixedDelayRadioButton.Checked = true;
+                    break;
+            }
         }
 
         protected override void WndProc(ref Message message)
