@@ -2,6 +2,7 @@ using AutoMouseClicker.Infrastructure;
 using AutoMouseClicker.Infrastructure.Enums;
 using System.Timers;
 using Timer = System.Timers.Timer;
+using System.Windows.Forms;
 
 namespace AutoMouseClicker
 {
@@ -27,6 +28,7 @@ namespace AutoMouseClicker
             // Compute the addition of each combination of the keys you want to be pressed
             // ALT+CTRL = 1 + 2 = 3 , CTRL+SHIFT = 2 + 4 = 6...
             DllHelper.RegisterHotKey(this.Handle, Constants.HOTKEY_ID, 0, (int)Keys.F6);
+            _timer.SynchronizingObject = this;
             _timer.Elapsed += new ElapsedEventHandler(Timer_Elapsed);
         }
 
@@ -53,7 +55,7 @@ namespace AutoMouseClicker
 
                 if (_continueClickEvent)
                 {
-                    _timer.Interval = _random.Next(189, 306);
+                    _timer.Interval = GetNextInterval();
                     _timer.Start();
                 }
                 else
@@ -69,7 +71,40 @@ namespace AutoMouseClicker
             if (_continueClickEvent)
             {
                 LeftMouseClick(Cursor.Position.X, Cursor.Position.Y);
-                _timer.Interval = _random.Next(189, 306);
+                _timer.Interval = GetNextInterval();
+            }
+        }
+
+        private double GetNextInterval()
+        {
+            int baseMs = (int)baseIntervalNumericUpDown.Value;
+            int variance = (int)varianceNumericUpDown.Value;
+
+            if (randomDelayRadioButton.Checked && variance > 0)
+            {
+                int offset = _random.Next(-variance, variance + 1);
+                int result = baseMs + offset;
+                return Math.Max(1, result);
+            }
+
+            return Math.Max(1, baseMs);
+        }
+
+        private void randomDelayRadioButton_CheckedChanged(object? sender, EventArgs e)
+        {
+            if (randomDelayRadioButton.Checked)
+            {
+                _delayType = DelayType.Random;
+                varianceNumericUpDown.Enabled = true;
+            }
+        }
+
+        private void fixedDelayRadioButton_CheckedChanged(object? sender, EventArgs e)
+        {
+            if (fixedDelayRadioButton.Checked)
+            {
+                _delayType = DelayType.Fixed;
+                varianceNumericUpDown.Enabled = false;
             }
         }
     }
