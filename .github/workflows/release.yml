@@ -1,0 +1,73 @@
+name: Build and release
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: rolling-release
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore
+        run: dotnet restore AutoMouseClicker.sln
+
+      - name: Build
+        run: dotnet build AutoMouseClicker.sln --configuration Release --no-restore
+
+      - name: Publish standalone executable
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: dotnet publish AutoMouseClicker/AutoMouseClicker.csproj --configuration Release --runtime win-x64 --self-contained true --output publish -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:DebugType=embedded
+
+      - name: Create or update rolling release
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $tagName = "rolling"
+          $assetPath = "publish/AutoMouseClicker.exe"
+          $releaseNotes = "Automatically updated from the latest commit on main. This rolling release is not a versioned snapshot."
+
+          gh release view $tagName --json tagName *> $null
+          if ($LASTEXITCODE -eq 0) {
+            gh api "repos/$env:GITHUB_REPOSITORY/git/refs/tags/$tagName" --method PATCH --field sha="$env:GITHUB_SHA" --field force=true
+            if ($LASTEXITCODE -ne 0) {
+              throw "Failed to update the rolling release tag."
+            }
+
+            gh release edit $tagName --title "Latest main build" --notes $releaseNotes
+            if ($LASTEXITCODE -ne 0) {
+              throw "Failed to update the rolling release details."
+            }
+
+            gh release upload $tagName $assetPath --clobber
+            if ($LASTEXITCODE -ne 0) {
+              throw "Failed to upload the latest executable."
+            }
+          } else {
+            gh release create $tagName $assetPath --title "Latest main build" --notes $releaseNotes --target $env:GITHUB_SHA
+            if ($LASTEXITCODE -ne 0) {
+              throw "Failed to create the rolling release."
+            }
+          }
