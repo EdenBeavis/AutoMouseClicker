@@ -36,6 +36,6 @@ Every push to `main` updates the [rolling release](https://github.com/EdenBeavis
 
 ## Versioned Releases
 
-Pushing a `vMAJOR.MINOR.PATCH` tag (for example, `v1.2.3`) creates a fixed GitHub Release with the self-contained executable and a SHA-256 checksum. Version tags must not be moved or reused. These releases are intended for package managers; the rolling release remains the latest build from `main`.
+The root `VERSION` file controls stable releases. Pushing normal changes to `main` updates the rolling release; when `VERSION` is higher than the latest versioned release, GitHub Actions creates a fixed release with the self-contained executable, a SHA-256 checksum, and a WinGet manifest. Leave `VERSION` unchanged for ordinary updates. For a new release, change it to the next `MAJOR.MINOR.PATCH` version (for example, `1.0.1`) in the release-ready change and push or merge that change to `main`; no manual Git tag is needed.
 
 See [WinGet release preparation](packaging/winget/README.md) for the package submission steps.
