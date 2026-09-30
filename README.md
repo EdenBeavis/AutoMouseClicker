@@ -33,3 +33,9 @@ dotnet run --project AutoMouseClicker/AutoMouseClicker.csproj
 Fork the repository, create a branch for your change, and open a pull request targeting `main`. Please build the solution before submitting; pull requests are also checked by GitHub Actions.
 
 Every push to `main` updates the [rolling release](https://github.com/EdenBeavis/AutoMouseClicker/releases/tag/rolling). It always contains the latest main build rather than keeping a separate release for every commit.
+
+## Versioned Releases
+
+Pushing a `vMAJOR.MINOR.PATCH` tag (for example, `v1.2.3`) creates a fixed GitHub Release with the self-contained executable and a SHA-256 checksum. Version tags must not be moved or reused. These releases are intended for package managers; the rolling release remains the latest build from `main`.
+
+See [WinGet release preparation](packaging/winget/README.md) for the package submission steps.
