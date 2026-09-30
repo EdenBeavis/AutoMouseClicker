@@ -48,12 +48,15 @@ jobs:
           }
 
           $candidateVersion = [version]::Parse($version)
-          $latestTag = git tag --list 'v*' --sort=-version:refname |
-            Where-Object { $_ -match '^v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$' } |
-            Select-Object -First 1
-          if ($LASTEXITCODE -ne 0) {
-            throw "Failed to read existing version tags."
+          $tagOutput = @(git tag --list 'v*' 2>&1)
+          $gitExitCode = $LASTEXITCODE
+          if ($gitExitCode -ne 0) {
+            throw "Failed to read existing version tags (git exit code $gitExitCode): $($tagOutput -join ' ')"
           }
+          $latestTag = $tagOutput |
+            Where-Object { $_ -match '^v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$' } |
+            Sort-Object { [version]::Parse($_.Substring(1)) } -Descending |
+            Select-Object -First 1
 
           $shouldRelease = $true
           if ($latestTag) {
