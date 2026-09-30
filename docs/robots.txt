@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://edenbeavis.github.io/AutoMouseClicker/sitemap.xml

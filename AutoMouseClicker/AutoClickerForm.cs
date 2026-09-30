@@ -9,6 +9,7 @@ namespace AutoMouseClicker
 {
     public partial class AutoClickerForm : Form
     {
+        private readonly System.Drawing.Icon? _applicationIcon;
         private readonly Timer _timer = new();
         private readonly Random _random = new();
         private readonly NotifyIcon _notifyIcon;
@@ -44,6 +45,11 @@ namespace AutoMouseClicker
         public AutoClickerForm()
         {
             InitializeComponent();
+            _applicationIcon = System.Drawing.Icon.ExtractAssociatedIcon(Application.ExecutablePath);
+            if (_applicationIcon is not null)
+            {
+                Icon = _applicationIcon;
+            }
 
             _trayMenu = new ContextMenuStrip();
             _trayMenu.Items.Add("Show", null, (_, _) => RestoreFromTray());
@@ -117,6 +123,7 @@ namespace AutoMouseClicker
                 DllHelper.UnregisterHotKey(Handle, Constants.HOTKEY_ID);
             }
             base.OnFormClosed(e);
+            _applicationIcon?.Dispose();
         }
 
         private void hideToTrayButton_Click(object? sender, EventArgs e)
